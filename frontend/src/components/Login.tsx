@@ -1,44 +1,45 @@
-// src/components/Login.tsx
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { Box, Button, Input, Heading } from '@chakra-ui/react';
-import { setUser } from '../slices/loginSlice';
-import axios from 'axios'; // Import Axios
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Box, Button, Input, Heading, Text } from "@chakra-ui/react";
+import { setUser } from "../slices/loginSlice";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // Define the type for the user data
 type UserData = {
   email: string;
   name: string;
-}
+};
 
-// Traditional function declaration for the Login component
 function Login() {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const navigate = useNavigate(); // Use for navigation
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
-  // Traditional function for handling login
   async function handleLogin(): Promise<void> {
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/login/', {
+      const response = await axios.post("http://127.0.0.1:5000/api/login", {
         email,
         password,
       });
 
       if (response.status === 200) {
-        const userData: UserData = response.data; // Assuming the response contains user data
-        dispatch(setUser(userData)); // Dispatch the setUser action with actual user data
-      } else {
-        console.error('Login failed');
+        const userData: UserData = response.data;
+        dispatch(setUser(userData));
+        console.log("Login successful:", userData);
+        navigate("/home");
       }
-    } catch (error) {
-      console.error('Error during login:', error);
+    } catch (error: any) {
+      setError(error.response?.data?.error || "Login failed");
     }
   }
 
   return (
     <Box width="300px" margin="auto" mt="100px">
       <Heading mb="6">Login</Heading>
+      {error && <Text color="red.500">{error}</Text>}
       <div>
         <label htmlFor="email">Email</label>
         <Input
@@ -59,7 +60,13 @@ function Login() {
           mb="4"
         />
       </div>
-      <Button colorScheme="teal" width="full" onClick={handleLogin}>Login</Button>
+      <Button bg="blue.600" _hover={{ bg: "blue.400" }} width="full" onClick={handleLogin}>
+        Login
+      </Button>
+      <Text mt="4">
+        Don't have an account?{" "}
+        <Button bg="blue.500" _hover={{ bg: "blue.400" }}  onClick={() => navigate("/register")}>Register</Button>
+      </Text>
     </Box>
   );
 }

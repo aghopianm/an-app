@@ -19,6 +19,7 @@ export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
   function Avatar(props, ref) {
     const { name, src, srcSet, loading, icon, fallback, children, ...rest } =
       props
+
     return (
       <ChakraAvatar.Root ref={ref} {...rest}>
         <AvatarFallback name={name} icon={icon}>
@@ -39,6 +40,7 @@ interface AvatarFallbackProps extends ChakraAvatar.FallbackProps {
 const AvatarFallback = React.forwardRef<HTMLDivElement, AvatarFallbackProps>(
   function AvatarFallback(props, ref) {
     const { name, icon, children, ...rest } = props
+
     return (
       <ChakraAvatar.Fallback ref={ref} {...rest}>
         {children}
