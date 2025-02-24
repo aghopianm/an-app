@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Box, Button, Input, Heading, Text } from "@chakra-ui/react";
+import { Box, Button, Input, Heading, Text, Image } from "@chakra-ui/react";
 import { setUser } from "../slices/loginSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -38,6 +38,14 @@ function Login() {
 
   return (
     <Box width="300px" margin="auto" mt="100px">
+      <Image
+        src="/sigma.jpg" 
+        alt="Login Image"
+        borderRadius="full"
+        boxSize="150px"
+        margin="auto"
+        mr="4"
+      />
       <Heading mb="6">Login</Heading>
       {error && <Text color="red.500">{error}</Text>}
       <div>
@@ -47,7 +55,7 @@ function Login() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          mb="4"
+          mr="4"
         />
       </div>
       <div>
@@ -60,12 +68,24 @@ function Login() {
           mb="4"
         />
       </div>
-      <Button bg="blue.600" _hover={{ bg: "blue.400" }} width="full" onClick={handleLogin}>
+      <Button
+        bg="blue.600"
+        _hover={{ bg: "blue.400" }}
+        width="full"
+        onClick={handleLogin}
+      >
         Login
       </Button>
       <Text mt="4">
         Don't have an account?{" "}
-        <Button bg="blue.500" _hover={{ bg: "blue.400" }}  onClick={() => navigate("/register")}>Register</Button>
+        <Button
+          bg="blue.500"
+          _hover={{ bg: "blue.400" }}
+          onClick={() => navigate("/register")}
+          ml="9"
+        >
+          Register
+        </Button>
       </Text>
     </Box>
   );
