@@ -57,8 +57,22 @@ function Register() {
           mb="4"
         />
       </div>
-      <Button colorScheme="teal" width="full" onClick={handleRegister}>
+      <Button
+        bg="blue.500"
+        _hover={{ bg: "blue.400" }}
+        width="full"
+        onClick={handleRegister}
+      >
         Register
+      </Button>
+      <Button
+        mt="4"
+        bg="green.500"
+        _hover={{ bg: "green.400" }}
+        width="full"
+        onClick={() => navigate("/")}
+      >
+        Go Back
       </Button>
     </Box>
   );
