@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, VStack } from '@chakra-ui/react'; // Removed Divider import
+import { Box, VStack, Flex } from '@chakra-ui/react'; // Removed Divider import
 import StatusInput from './StatusInput';
 import PostButton from './PostButton';
 import StatusFeed from './StatusFeed';
@@ -17,14 +17,15 @@ const StatusBox = () => {
   };
 
   return (
-    <Box maxWidth="600px" mx="auto" p={5} bg="gray.50" borderRadius="md" boxShadow="lg">
-      <VStack spacing={4} align="stretch">
-        <StatusInput statusText={statusText} setStatusText={setStatusText} />
-        <PostButton handlePostStatus={handlePostStatus} />
-        {/* Removed Divider */}
-        <StatusFeed statuses={statuses} />
-      </VStack>
-    </Box>
+    <Flex justify="center" align="center" width="100vw" py={10} >
+      <Box width="100%" maxWidth="800px" p={5} bg="white" borderRadius="md" boxShadow="lg">
+        <VStack align="stretch">
+          <StatusInput statusText={statusText} setStatusText={setStatusText} />
+          <PostButton handlePostStatus={handlePostStatus} />
+          <StatusFeed statuses={statuses} />
+        </VStack>
+      </Box>
+    </Flex>
   );
 };
 

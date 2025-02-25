@@ -5,7 +5,6 @@ import { setUser } from "../slices/loginSlice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-// Define the type for the user data
 type UserData = {
   email: string;
   name: string;
@@ -26,9 +25,11 @@ function Login() {
       });
 
       if (response.status === 200) {
-        const userData: UserData = response.data;
-        dispatch(setUser(userData));
-        console.log("Login successful:", userData);
+        const { user, token } = response.data; // Get token from response
+        dispatch(setUser(user)); // Store user info in Redux
+        localStorage.setItem("token", token); // Store token in localStorage
+        console.log("Login successful:", user);
+        console.log("Auth Token:", token); // Log the token
         navigate("/home");
       }
     } catch (error: any) {
@@ -39,7 +40,7 @@ function Login() {
   return (
     <Box width="300px" margin="auto" mt="100px">
       <Image
-        src="/sigma.jpg" 
+        src="/sigma.jpg"
         alt="Login Image"
         borderRadius="full"
         boxSize="150px"

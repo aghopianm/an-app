@@ -1,21 +1,22 @@
-import { Box, Heading, Button } from "@chakra-ui/react";
+import { useSelector } from "react-redux";
+import { RootState } from "../store"; // Adjust path if needed
 import { useNavigate } from "react-router-dom";
+import { Box, Heading, Button } from "@chakra-ui/react";
 import { Avatar } from "../components/ui/Avatar";
 import StatusBox from "./StatusBox";
 
 function Home() {
   const navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.login.user);
+
+  // Extract first name for greeting
+  const firstName = user?.name.split(" ")[0] || "Guest";
 
   return (
     <Box minH="100vh" display="flex" flexDirection="column">
-      {/* Top bar with Avatar and Logout Button */}
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        p="4"
-      >
-        <Avatar name="Minas Aghopian" />
+      <Box display="flex" justifyContent="space-between" alignItems="center" p="4">
+        {/* Dynamically pass the user's name */}
+        <Avatar name={user?.name || "Guest"} />
         <Button
           bg="red.600"
           _hover={{ bg: "red.500" }}
@@ -26,18 +27,8 @@ function Home() {
       </Box>
       <hr />
 
-      <Box
-        flex="1"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        textAlign="center"
-        flexDirection="column"  // Align the status box underneath the heading
-        gap={6}  // Space out elements vertically
-      >
-        <Heading>Hello, welcome to your feed!</Heading>
-        
-        {/* Add the StatusBox here */}
+      <Box display="flex" justifyContent="center" alignItems="center" textAlign="center" flexDirection="column" gap={6} py={10}>
+        <Heading>Hello, {firstName}! Welcome to your feed!</Heading>
         <StatusBox />
       </Box>
     </Box>

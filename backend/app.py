@@ -1,3 +1,5 @@
+import jwt  # Import JWT
+import datetime  # For token expiration
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -7,47 +9,10 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
 bcrypt = Bcrypt(app)
 
-# Initialize SQLite database
-def init_db():
-    conn = sqlite3.connect('users.db')
-    c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            name TEXT NOT NULL
-        )
-    ''')
-    conn.commit()
-    conn.close()
+# Secret key for JWT (keep this safe!)
+SECRET_KEY = "your_secret_key_here"
 
-init_db()
-
-# Register route
-@app.route("/api/register", methods=["POST"])
-def register():
-    data = request.json
-    email = data.get("email")
-    password = data.get("password")
-    name = data.get("name")
-
-    if not email or not password or not name:
-        return jsonify({"error": "All fields are required"}), 400
-
-    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-
-    try:
-        conn = sqlite3.connect('users.db')
-        c = conn.cursor()
-        c.execute("INSERT INTO users (email, password, name) VALUES (?, ?, ?)", (email, hashed_password, name))
-        conn.commit()
-        conn.close()
-        return jsonify({"message": "User registered successfully"}), 201
-    except sqlite3.IntegrityError:
-        return jsonify({"error": "User already exists"}), 409
-
-# Login route
+# Login route with JWT
 @app.route("/api/login", methods=["POST"])
 def login():
     data = request.json
@@ -61,7 +26,14 @@ def login():
     conn.close()
 
     if user and bcrypt.check_password_hash(user[2], password):
-        return jsonify({"email": user[1], "name": user[3]}), 200
+        # Generate JWT Token
+        token = jwt.encode(
+            {"user_id": user[0], "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)}, 
+            SECRET_KEY, 
+            algorithm="HS256"
+        )
+        
+        return jsonify({"user": {"email": user[1], "name": user[3]}, "token": token}), 200
     else:
         return jsonify({"error": "Invalid email or password"}), 401
 
