@@ -26,7 +26,7 @@ const initialState: AuthState = {
 
 // Configure axios defaults
 // This will help with CORS credentials
-axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = false;
 
 // Async thunks
 export const loginUser = createAsyncThunk(

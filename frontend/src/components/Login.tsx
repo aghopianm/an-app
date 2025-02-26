@@ -11,7 +11,6 @@ import {
 } from "@chakra-ui/react";
 import { loginUser } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
-import { AppDispatch, RootState } from "../store"; // Update your RootState import
 
 function Login() {
   const dispatch = useDispatch<AppDispatch>();
