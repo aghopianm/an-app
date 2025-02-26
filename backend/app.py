@@ -12,6 +12,37 @@ bcrypt = Bcrypt(app)
 # Secret key for JWT (keep this safe!)
 SECRET_KEY = "your_secret_key_here"
 
+@app.route("/api/register", methods=["POST"])
+def register():
+    data = request.json
+    name = data.get("name")
+    email = data.get("email")
+    password = data.get("password")
+
+    # Hash the password
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    # Check if the email already exists
+    conn = sqlite3.connect('users.db')
+    c = conn.cursor()
+    c.execute("SELECT id FROM users WHERE email = ?", (email,))
+    existing_user = c.fetchone()
+
+    if existing_user:
+        conn.close()
+        return jsonify({"error": "Email already registered"}), 400
+
+    # Insert the new user
+    try:
+        c.execute("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", 
+                 (name, email, hashed_password))
+        conn.commit()
+        conn.close()
+        return jsonify({"message": "User registered successfully"}), 201
+    except Exception as e:
+        conn.close()
+        return jsonify({"error": str(e)}), 500
+    
 # Login route with JWT
 @app.route("/api/login", methods=["POST"])
 def login():

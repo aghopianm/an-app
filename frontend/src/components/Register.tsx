@@ -1,25 +1,26 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Box, Button, Input, Heading, Text } from "@chakra-ui/react";
-import axios from "axios";
+import { registerUser } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
+import { AppDispatch, RootState } from "../store"; // Update your RootState import
 
 function Register() {
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
+  
+  // Get auth state from Redux
+  const { error, status } = useSelector((state: RootState) => state.auth);
 
   async function handleRegister(): Promise<void> {
-    try {
-      await axios.post("http://127.0.0.1:5000/api/register", {
-        name,
-        email,
-        password,
-      });
-      navigate("/"); // Redirect to login
-    } catch (error: any) {
-      setError(error.response?.data?.error || "Registration failed");
+    const resultAction = await dispatch(registerUser({ name, email, password }));
+    
+    // Navigate to login page only if registration is successful
+    if (registerUser.fulfilled.match(resultAction)) {
+      navigate("/");
     }
   }
 
@@ -62,6 +63,8 @@ function Register() {
         _hover={{ bg: "blue.400" }}
         width="full"
         onClick={handleRegister}
+        isLoading={status === 'loading'}
+        loadingText="Registering"
       >
         Register
       </Button>

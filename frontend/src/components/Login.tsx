@@ -1,46 +1,44 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Box, Button, Input, Heading, Text, Image } from "@chakra-ui/react";
-import { setUser } from "../slices/loginSlice";
-import axios from "axios";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  Box,
+  Button,
+  Input,
+  Heading,
+  Text,
+  Image,
+  Spinner,
+} from "@chakra-ui/react";
+import { loginUser } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
-
-type UserData = {
-  email: string;
-  name: string;
-};
+import { AppDispatch, RootState } from "../store"; // Update your RootState import
 
 function Login() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate(); // Use for navigation
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
+
+  // Get auth state from Redux
+  const { isLoggedIn, error, status } = useSelector(
+    (state: RootState) => state.auth
+  );
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/home");
+    }
+  }, [isLoggedIn, navigate]);
 
   async function handleLogin(): Promise<void> {
-    try {
-      const response = await axios.post("http://127.0.0.1:5000/api/login", {
-        email,
-        password,
-      });
-
-      if (response.status === 200) {
-        const { user, token } = response.data; // Get token from response
-        dispatch(setUser(user)); // Store user info in Redux
-        localStorage.setItem("token", token); // Store token in localStorage
-        console.log("Login successful:", user);
-        console.log("Auth Token:", token); // Log the token
-        navigate("/home");
-      }
-    } catch (error: any) {
-      setError(error.response?.data?.error || "Login failed");
-    }
+    dispatch(loginUser({ email, password }));
   }
 
   return (
     <Box width="300px" margin="auto" mt="100px">
       <Image
-        src="/sigma.jpg"
+        src="/Facebook.svg"
         alt="Login Image"
         borderRadius="full"
         boxSize="150px"
@@ -74,6 +72,8 @@ function Login() {
         _hover={{ bg: "blue.400" }}
         width="full"
         onClick={handleLogin}
+        isLoading={status === "loading"}
+        loadingText="Logging in"
       >
         Login
       </Button>

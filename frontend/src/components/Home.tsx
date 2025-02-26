@@ -1,16 +1,31 @@
 import { useSelector } from "react-redux";
-import { RootState } from "../store"; // Adjust path if needed
+import { RootState } from "../store";
 import { useNavigate } from "react-router-dom";
 import { Box, Heading, Button } from "@chakra-ui/react";
 import { Avatar } from "../components/ui/Avatar";
 import StatusBox from "./StatusBox";
+import { useEffect } from "react";
 
 function Home() {
   const navigate = useNavigate();
-  const user = useSelector((state: RootState) => state.login.user);
+  
+  // Update selector to use state.auth instead of state.login
+  const user = useSelector((state: RootState) => state.auth.user);
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
 
-  // Extract first name for greeting
-  const firstName = user?.name.split(" ")[0] || "Guest";
+  // Extract first name for greeting (with null check)
+  const firstName = user?.name?.split(" ")[0] || "Guest";
+
+  if (!user) {
+    return null; // Don't render anything while checking authentication
+  }
 
   return (
     <Box minH="100vh" display="flex" flexDirection="column">

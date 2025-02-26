@@ -1,18 +1,23 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setUser } from "../slices/loginSlice";
+import { logout } from "../slices/authSlice";
+import { AppDispatch } from "../store";
 
 function Logout() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(setUser(null)); // Clear user state
-    navigate("/"); // Redirect to login page
+    // Use the logout action instead of setUser(null)
+    dispatch(logout());
+    
+    // Redirect to login page
+    navigate("/");
   }, [dispatch, navigate]);
 
-  return null; // No UI needed, just handles logout
+  // No UI needed, just handles logout
+  return null;
 }
 
 export default Logout;
