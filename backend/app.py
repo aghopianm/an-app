@@ -6,7 +6,10 @@ from flask_bcrypt import Bcrypt
 import sqlite3
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
+CORS(app, resources={r"/api/*": {
+    "origins": ["http://localhost:5173", "http://127.0.0.1:5173"],
+    "supports_credentials": True
+}})
 bcrypt = Bcrypt(app)
 
 # Secret key for JWT (keep this safe!)
@@ -67,6 +70,32 @@ def login():
         return jsonify({"user": {"email": user[1], "name": user[3]}, "token": token}), 200
     else:
         return jsonify({"error": "Invalid email or password"}), 401
+@app.route("/api/search", methods=["GET"])
+def search_users():
+    query = request.args.get("query")
+    if not query:
+        return jsonify({"data": [], "status": "success"}), 200
+
+    try:
+        conn = sqlite3.connect('users.db')
+        c = conn.cursor()
+        c.execute("SELECT id, name, email FROM users WHERE name LIKE ?", (f"%{query}%",))
+        users = c.fetchall()
+        conn.close()
+
+        results = [{"id": user[0], "name": user[1], "email": user[2]} for user in users]
+        print(f"Search query: {query}")
+        print(f"Search results: {results}")
+        
+        return jsonify({
+            "status": "success",
+            "data": results
+        }), 200
+
+    except Exception as e:
+        print(f"Error in search: {str(e)}")
+        return jsonify({"error": "Internal server error"}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    # Update host to use 127.0.0.1
+    app.run(debug=True, host='127.0.0.1', port=5000)
