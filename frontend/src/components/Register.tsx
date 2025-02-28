@@ -63,7 +63,7 @@ function Register() {
         _hover={{ bg: "blue.400" }}
         width="full"
         onClick={handleRegister}
-        isLoading={status === 'loading'}
+        loading={status === 'loading'}
         loadingText="Registering"
       >
         Register

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Input, Box, Button, Flex } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 
-const SearchBar: React.FC = () => {
+const SearchBar = () => {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 

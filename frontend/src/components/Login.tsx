@@ -7,10 +7,10 @@ import {
   Heading,
   Text,
   Image,
-  Spinner,
 } from "@chakra-ui/react";
 import { loginUser } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
+import {RootState, AppDispatch} from "../store";
 
 function Login() {
   const dispatch = useDispatch<AppDispatch>();
@@ -71,7 +71,7 @@ function Login() {
         _hover={{ bg: "blue.400" }}
         width="full"
         onClick={handleLogin}
-        isLoading={status === "loading"}
+        loading={status === "loading"}
         loadingText="Logging in"
       >
         Login

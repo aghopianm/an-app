@@ -1,4 +1,4 @@
-import React from "react";
+
 import { Box, Flex, Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -6,7 +6,7 @@ import { RootState, AppDispatch } from "../store";
 import { logout } from "../slices/authSlice";
 import SearchBar from "./SearchBar";
 
-const NavBar: React.FC = () => {
+const NavBar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
