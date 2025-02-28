@@ -17,64 +17,73 @@ const SearchResults = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const query = new URLSearchParams(location.search).get("query");
-    
+
   useEffect(() => {
     const fetchResults = async () => {
       if (!query) {
         setResults([]);
         return;
       }
-      
+
       setLoading(true);
       setError(null);
-      
+
       try {
-        const response = await axiosInstance.get('/api/search', {
+        const response = await axiosInstance.get("/api/search", {
           params: { query },
-          withCredentials: true
+          withCredentials: true,
         });
-        
-        console.log('Search response:', response.data);
-        
+
+        console.log("Search response:", response.data);
+
         // Check for the correct response structure
-        if (response.data.status === 'success' && Array.isArray(response.data.data)) {
+        if (
+          response.data.status === "success" &&
+          Array.isArray(response.data.data)
+        ) {
           setResults(response.data.data);
         } else {
           setError("Unexpected response format");
         }
       } catch (error) {
-        console.error('Search error:', error);
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        console.error("Search error:", error);
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error";
         setError(`Error fetching search results: ${errorMessage}`);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchResults();
   }, [query]);
 
   const handleClearResults = () => {
     // Navigate to home or empty search page
-    navigate('/');
+    navigate("/");
   };
 
   return (
     <Box>
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
         <Heading>Search Results for "{query}"</Heading>
-        <Button 
-          leftIcon={<DeleteIcon />} 
-          colorScheme="red" 
+        <Button
+          leftIcon={<DeleteIcon />}
+          colorScheme="red"
           variant="outline"
           onClick={handleClearResults}
-          isDisabled={!query || results.length === 0}
+          disabled={results.length === 0}
+          isDisabled={results.length === 0}
         >
           Clear Results
         </Button>
       </Flex>
-      
-      {loading && <Flex justify="center" my={8}><Spinner size="xl" /></Flex>}
+
+      {loading && (
+        <Flex justify="center" my={8}>
+          <Spinner role="status" size="xl" />
+        </Flex>
+      )}
       {error && <Text color="red.500">{error}</Text>}
       {!loading && !error && results.length === 0 && (
         <Text>No results found for "{query}"</Text>

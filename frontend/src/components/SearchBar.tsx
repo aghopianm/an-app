@@ -78,7 +78,7 @@ const SearchBar = () => {
   };
 
   return (
-    <Box position="relative" ref={searchBarRef}>
+    <Box position="relative" ref={searchBarRef} width="300px">
       <Flex>
         <Input
           placeholder="Search..."
@@ -87,29 +87,39 @@ const SearchBar = () => {
           onFocus={handleInputFocus}
           onKeyDown={handleKeyDown}
           color="white"
-          pr="32px"
+          pr="50px"
+          borderRightRadius={0}
         />
         {query && (
           <IconButton
             position="absolute"
-            right="70px"
+            right="90px"
             top="50%"
             transform="translateY(-50%)"
             size="sm"
             aria-label="Clear search"
-            icon={<CloseIcon />}
             onClick={handleClearSearch}
             variant="ghost"
+            color="grey.400"
+            _hover={{ color: "white", bg: "red.600" }}
             zIndex={2}
-          />
+          >
+            <CloseIcon boxSize={3} />
+          </IconButton>
         )}
         <Button
           onClick={() => handleSearch()}
           bg="green.500"
           _hover={{ bg: "green.400" }}
-          leftIcon={<SearchIcon />}
+          borderLeftRadius={0}
+          px={4}
+          ml="2"
+          height="40px"
         >
-          Go
+          <Flex align="center">
+            <SearchIcon mr={2} />
+            <Text>Go</Text>
+          </Flex>
         </Button>
       </Flex>
 
@@ -119,12 +129,14 @@ const SearchBar = () => {
           top="100%"
           left="0"
           right="0"
-          bg="gray.700"
+          bg="gray.800"
           borderRadius="md"
           mt="2"
-          p="2"
+          p="3"
           zIndex="10"
-          boxShadow="md"
+          boxShadow="lg"
+          borderWidth="1px"
+          borderColor="gray.700"
         >
           {recentSearches.length > 0 ? (
             <VStack align="stretch" spacing={2}>
@@ -137,30 +149,35 @@ const SearchBar = () => {
                   variant="ghost"
                   colorScheme="red"
                   onClick={handleClearAllSearches}
-                  leftIcon={<DeleteIcon />}
                 >
-                  Clear All
+                  <Flex align="center">
+                    <DeleteIcon mr={1} boxSize={3} />
+                    <Text fontSize="xs">Clear All</Text>
+                  </Flex>
                 </Button>
               </Flex>
-              <Separator />
+              <Separator borderColor="gray.600" />
               {recentSearches.map((search, index) => (
                 <HStack
                   key={index}
                   p="2"
-                  _hover={{ bg: "gray.600" }}
+                  _hover={{ bg: "gray.700" }}
                   borderRadius="md"
                   cursor="pointer"
                   onClick={() => handleRecentSearchClick(search)}
                   justify="space-between"
                 >
-                  <Text color="white">{search}</Text>
+                  <Text color="white" mr={4}>{search}</Text>
                   <IconButton
                     size="xs"
                     aria-label="Remove search"
-                    icon={<CloseIcon />}
                     onClick={(e) => removeSearch(e, search)}
                     variant="ghost"
-                  />
+                    color="gray.400"
+                    _hover={{ color: "white", bg: "gray.600" }}
+                  >
+                    <CloseIcon boxSize={2.5} />
+                  </IconButton>
                 </HStack>
               ))}
             </VStack>

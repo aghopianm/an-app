@@ -1,7 +1,7 @@
 // src/store/slices/searchSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface SearchState {
+type SearchState = {
   recentSearches: string[];
   currentQuery: string | null;
 }
