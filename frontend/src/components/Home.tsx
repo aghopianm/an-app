@@ -18,10 +18,6 @@ function Home() {
 
   const firstName = user?.name?.split(" ")[0] || "Guest";
 
-  if (!user) {
-    return null;
-  }
-
   return (
     <Box
       minH="100vh"

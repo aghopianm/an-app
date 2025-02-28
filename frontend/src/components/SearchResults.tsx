@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Box, Heading, Text, Button, Flex, Spinner } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
 import axiosInstance from "@/api/axiosInstance";
 
 interface User {
@@ -11,6 +12,7 @@ interface User {
 
 const SearchResults = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [results, setResults] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,10 +54,27 @@ const SearchResults = () => {
     fetchResults();
   }, [query]);
 
+  const handleClearResults = () => {
+    // Navigate to home or empty search page
+    navigate('/');
+  };
+
   return (
     <Box>
-      <Heading mb={4}>Search Results for "{query}"</Heading>
-      {loading && <Text>Loading...</Text>}
+      <Flex justifyContent="space-between" alignItems="center" mb={4}>
+        <Heading>Search Results for "{query}"</Heading>
+        <Button 
+          leftIcon={<DeleteIcon />} 
+          colorScheme="red" 
+          variant="outline"
+          onClick={handleClearResults}
+          isDisabled={!query || results.length === 0}
+        >
+          Clear Results
+        </Button>
+      </Flex>
+      
+      {loading && <Flex justify="center" my={8}><Spinner size="xl" /></Flex>}
       {error && <Text color="red.500">{error}</Text>}
       {!loading && !error && results.length === 0 && (
         <Text>No results found for "{query}"</Text>
